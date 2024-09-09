@@ -1,0 +1,33 @@
+name: Build and Test the Demo69888 application
+
+# Trigger the workflow on push, pull request events to the main branch, and manual invocation
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch: # Allow manual invocation of the workflow
+
+jobs:
+  build:
+    runs-on: ubuntu-latest # Use the latest Ubuntu runner
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2 # Check out the repository code
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2 # Set up the .NET environment
+      with:
+        dotnet-version: '8.x' # Specify the .NET version to use
+
+    - name: Restore dependencies
+      run: dotnet restore # Restore the project dependencies
+
+    - name: Build
+      run: dotnet build --configuration Release --no-restore # Build the project in Release configuration
+
+    - name: Test
+      run: dotnet test --no-restore --verbosity normal # Run the tests with normal verbosity
