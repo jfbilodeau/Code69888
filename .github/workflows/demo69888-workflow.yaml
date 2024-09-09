@@ -84,4 +84,4 @@ jobs:
         az webapp deploy \
           --resource-group demo69888 \
           --name demo69888 \
-          --src-path .
+          --src-path ./
