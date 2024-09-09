@@ -65,9 +65,6 @@ jobs:
     needs: [build, deploy_infrastructure] # Ensure this job runs after build and deploy_infrastructure jobs
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2 # Check out the repository code
-
     - name: Azure Login
       uses: azure/login@v1 # Log in to Azure
       with:
@@ -77,11 +74,11 @@ jobs:
       uses: actions/download-artifact@v2 # Download the build artifacts
       with:
         name: aspnet-app
-        path: .
+        path: ./publish
 
     - name: Deploy to Web App
       run: |
         az webapp deploy \
           --resource-group demo69888 \
           --name demo69888 \
-          --src-path ./
+          --src-path ./publish
