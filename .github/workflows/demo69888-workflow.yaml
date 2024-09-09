@@ -76,9 +76,15 @@ jobs:
         name: aspnet-app
         path: ./publish
 
+    # - name: Deploy to Web App
+    #   run: |
+    #     az webapp deploy \
+    #       --resource-group demo69888 \
+    #       --name demo69888 \
+    #       --src-path ./publish
     - name: Deploy to Web App
-      run: |
-        az webapp deploy \
-          --resource-group demo69888 \
-          --name demo69888 \
-          --src-path ./publish
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: demo69888
+        slot-name: production
+        package: ./publish
