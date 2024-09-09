@@ -1,4 +1,4 @@
-name: Build and Test the Demo69888 application
+name: Build, Test, and Deploy ASP.NET Application
 
 # Trigger the workflow on push, pull request events to the main branch, and manual invocation
 on:
@@ -31,3 +31,31 @@ jobs:
 
     - name: Test
       run: dotnet test --no-restore --verbosity normal # Run the tests with normal verbosity
+
+    - name: Publish build artifacts
+      run: dotnet publish -c Release -o ./publish # Publish the build artifacts to the ./publish directory
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v2 # Upload the build artifacts
+      with:
+        name: aspnet-app
+        path: ./publish
+
+  deploy:
+    runs-on: ubuntu-latest # Use the latest Ubuntu runner
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2 # Check out the repository code
+
+    - name: Azure Login
+      uses: azure/login@v1 # Log in to Azure
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Deploy Bicep template
+      run: |
+        az deployment group create \
+          --resource-group Demo69888 \
+          --template-file ./bicep/template.bicep \
+          --parameters @./bicep/parameters-prod.json
